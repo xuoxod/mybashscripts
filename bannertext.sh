@@ -43,7 +43,10 @@ case $# in
         text="$filepath does not exist or is not writable or is not a file\n"
         white text
     else
-        printf "Howdy Hay!!!"
+        filebase=$(basename "$filepath")
+        filename=${filebase%.*}
+        extension=${filebase##*.}
+        printf "File Name: $filename\nFile Ext: $extension\n"
     fi
     ;;
 
