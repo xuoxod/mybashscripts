@@ -38,9 +38,10 @@ case $# in
     text=$1
     filepath=$2
     if [ -z "$text" ]; then
-        printf "\n\tNo Text\n"
+        text="Argument is empty"
     elif [ ! -x "$filepath" ] || [ ! -w "$filepath" ] || [ ! -f "$filepath" ]; then
-        printf "$filepath does not exist or is not writable or is not a file\n"
+        text="$filepath does not exist or is not writable or is not a file\n"
+        white text
     else
         printf "Howdy Hay!!!"
     fi

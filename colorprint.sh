@@ -48,6 +48,10 @@ custom() {
     printf "\e[38;5;224m\e[38;5;%dm%s\n" "$color" "$text"
 }
 
+blink() {
+    printf "\e[28;5;24m%s\e[m\n" "$text"
+}
+
 util-export() {
     export -f custom
     export -f black
@@ -61,4 +65,5 @@ util-export() {
     export -f red
     export -f white
     export -f yellow
+    export -f blink
 }
