@@ -39,14 +39,27 @@ case $# in
     filepath=$2
     if [ -z "$text" ]; then
         text="Argument is empty"
-    elif [ ! -x "$filepath" ] || [ ! -w "$filepath" ] || [ ! -f "$filepath" ]; then
-        text="$filepath does not exist or is not writable or is not a file\n"
+    elif [ ! -e "$filepath" ]; then
+        text="$filepath does not exist"
+        white text
+    elif [ ! -f "$filepath" ]; then
+        text="$filepath is not a file"
+        white text
+    elif [ ! -w "$filepath" ]; then
+        text="$filepath is not writable"
         white text
     else
         filebase=$(basename "$filepath")
         filename=${filebase%.*}
         extension=${filebase##*.}
-        printf "File Name: $filename\nFile Ext: $extension\n"
+
+        if [ "$filename" != "motd" ]; then
+            text="This program will only write to the /etc/motd file"
+            white text
+        else
+            text=$(figlet -cptW "$text")
+            blue text
+        fi
     fi
     ;;
 
