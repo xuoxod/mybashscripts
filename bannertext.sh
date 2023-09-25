@@ -5,7 +5,7 @@ set -u
 source colorprint.sh
 
 clearVars() {
-    unset color text
+    unset color text filebase filename extension
 }
 
 gracefulExit() {
@@ -18,6 +18,7 @@ usage() {
     white text
     text='bannertext <"Double Quoted Text"> <Path to banner file>\n'
     white text
+    gracefulExit
 }
 
 trap "gracefulExit" INT PWR QUIT TERM
@@ -39,6 +40,7 @@ case $# in
     filepath=$2
     if [ -z "$text" ]; then
         text="Argument is empty"
+        white text
     elif [ ! -e "$filepath" ]; then
         text="$filepath does not exist"
         white text
@@ -67,3 +69,4 @@ case $# in
     usage
     ;;
 esac
+gracefulExit
