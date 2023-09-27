@@ -30,7 +30,7 @@ case $# in
         text="Argument is empty"
         orange text
     else
-        color="39"
+        icolor="39"
         custom color text
     fi
     ;;
@@ -55,12 +55,12 @@ case $# in
         filename=${filebase%.*}
         extension=${filebase##*.}
 
-        if [ "$filename" != "motd" ]; then
+        if [ "$filename" != "motd" ] || [ "$filepath" != "/etc/motd" ]; then
             text="This program will only write to the /etc/motd file"
             white text
         else
             text=$(figlet -cptW "$text")
-            blue text
+            blue text >"$filepath"
         fi
     fi
     ;;

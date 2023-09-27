@@ -45,7 +45,7 @@ yellow() {
 }
 
 custom() {
-    printf "\e[38;5;224m\e[38;5;%dm%s\n" "$color" "$text"
+    printf "\e[38;5;224m\e[38;5;%dm%s\n" "$icolor" "$text"
 }
 
 blink() {
