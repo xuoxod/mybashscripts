@@ -5,7 +5,7 @@ set -u
 source colorprint.sh
 
 clearVars() {
-    unset color text filebase filename extension
+    unset text filebase filename extension
 }
 
 gracefulExit() {
@@ -39,7 +39,7 @@ case $# in
     text=$1
     filepath=$2
     if [ -z "$text" ]; then
-        text="Argument is empty"
+        text="The message is empty"
         white text
     elif [ ! -e "$filepath" ]; then
         text="$filepath does not exist"
@@ -55,8 +55,11 @@ case $# in
         filename=${filebase%.*}
         extension=${filebase##*.}
 
-        if [ "$filename" != "motd" ] || [ "$filepath" != "/etc/motd" ]; then
-            text="This program will only write to the /etc/motd file"
+        if [ "$filename" != "motd" ]; then
+            text="Must write to the motd file"
+            white "$text"
+        elif [ "$filepath" != "/etc/motd" ]; then
+            text="This program will only write to a writalbe /etc/motd file"
             white text
         else
             text=$(figlet -cptW "$text")
