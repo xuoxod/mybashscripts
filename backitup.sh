@@ -33,6 +33,7 @@ case $# in
         printf "Directory to check:\t$dirPath\n"
         printf "Checking for backups to:\t$dirName\n\n"
         howManyBackups=0
+        hasBackup=false
 
         for file in $(ls "$dirPath"); do
             filebase=$(basename "$file")
@@ -44,6 +45,7 @@ case $# in
             if [ "$filename" = "$dirName" ]; then
                 if [ "$suffix" != "$dirName" ]; then
                     if [[ "$suffix" =~ bak([0-9]+)? ]]; then
+                        hasBackup=true
                         printf "\nFound $fullpath\n"
                         printf "Base $filebase\n"
                         printf "Name $filename\n"
@@ -59,16 +61,33 @@ case $# in
                 fi
             fi
         done
-        printf "\nHow many backups do $dirName have? $howManyBackups\n"
 
-        if [ "$howManyBackups" -eq 0 ]; then
-            printf "Making new backup\n"
-        elif [ "$howManyBackups" -gt 0 ]; then
-            howManyBackups=$(echo $(($howManyBackups + 1)))
-            newBackup="$parentDir/$filename-bak$howManyBackups"
-            printf "Making new backup $newBackup\n"
+        if [ hasBackup = true ]; then
+            printf "\nHow many backups do $dirName have? $howManyBackups\n"
+
+            if [ "$howManyBackups" -eq 0 ]; then
+                printf "Making new backup\n"
+            elif [ "$howManyBackups" -gt 0 ]; then
+                howManyBackups=$(echo $(($howManyBackups + 1)))
+                newBackup="$parentDir/$filename-bak$howManyBackups"
+                printf "Making new backup $newBackup\n"
+            else
+                gracefulExit
+            fi
+        else
+            text="Directory $dirName does not exist\n"
+            white
+            printf "$text\n"
         fi
-
+    else
+        text="Warning ... Directory $dirPath does not exist"
+        yellow
+        printf "$text\n"
+        text="$dirPath"
+        blink
+        white
+        printf "$text\n"
+        gracefulExit
     fi
     ;;
 esac
