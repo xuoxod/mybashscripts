@@ -7,7 +7,7 @@ set -o pipefail
 source colortext.sh
 
 clearVars() {
-    unset text filebase filename suffix dirPath
+    unset i parentPath filebase filename suffix fullpath
 }
 
 gracefulExit() {
@@ -26,37 +26,47 @@ createNewBackup() {
 trap "gracefulExit" INT PWR QUIT TERM
 
 case $# in
-1)
+2)
     dirPath="$1"
+    dirName="$2"
     if [ -e "$dirPath" ] && [ -r "$dirPath" ] && [ -d "$dirPath" ]; then
-        parentPath="$(dirname "$dirPath")"
-        i=0
+        printf "Directory to check:\t$dirPath\n"
+        printf "Checking for backups to:\t$dirName\n\n\n"
+        howManyBackups=0
 
-        for file in $(ls "$parentPath"); do
+        for file in $(ls "$dirPath"); do
             filebase=$(basename "$file")
             filename=${filebase%-*}
             suffix=${filebase##*-}
-            fullpath="$parentPath/$filebase"
+            fullpath="$dirPath$filebase"
+            parentDir="$(dirname "$fullpath")"
 
-            if [ -d "$fullpath" ]; then
-                if [[ "$suffix" =~ bak([0-9]+)? ]]; then
-                    i=$(echo $(($i + 1)))
-                    printf "Original: $dirPath\n"
-                    printf "Backup: $fullpath\n"
-                    #            printf "File Name: $filename\n"
-                    #            printf "Full Path: $fullpath\n"
-                    printf "Parent: $parentPath\n\n"
+            if [ "$filename" = "$dirName" ]; then
+                if [ "$suffix" != "$dirName" ]; then
+                    printf "\nFound $fullpath\n"
+                    printf "Base $filebase\n"
+                    printf "Name $filename\n"
+                    printf "Suffix $suffix\n"
+                    printf "Parent $parentDir\n"
+                    printf -- '%.0s-' {1..25}
+                    printf "\n"
+
+                    if [[ "$suffix" =~ bak([0-9]+)? ]]; then
+                        howManyBackups=$(echo $(($howManyBackups + 1)))
+                    fi
                 fi
             fi
         done
-        createNewBackup
-    else
-        text="No such directory"
-        white
-        printf "$text\n"
-        text="$dirPath"
-        blink
-        printf "$text\n"
+        printf "\nHow many backups do $dirName have? $howManyBackups\n"
+
+        if [ "$howManyBackups" -eq 0 ]; then
+            printf "Making new backup\n"
+        elif [ "$howManyBackups" -gt 0 ]; then
+            howManyBackups=$(echo $(($howManyBackups + 1)))
+            newBackup="$parentDir/$filename-bak$howManyBackups"
+            printf "Making new backup $newBackup\n"
+        fi
+
     fi
     ;;
 esac
