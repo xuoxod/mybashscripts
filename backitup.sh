@@ -31,7 +31,7 @@ case $# in
     dirName="$2"
     if [ -e "$dirPath" ] && [ -r "$dirPath" ] && [ -d "$dirPath" ]; then
         printf "Directory to check:\t$dirPath\n"
-        printf "Checking for backups to:\t$dirName\n\n\n"
+        printf "Checking for backups to:\t$dirName\n\n"
         howManyBackups=0
 
         for file in $(ls "$dirPath"); do
@@ -48,7 +48,7 @@ case $# in
                     printf "Name $filename\n"
                     printf "Suffix $suffix\n"
                     printf "Parent $parentDir\n"
-                    printf -- '%.0s-' {1..25}
+                    printf '%.0s-' {1..55}
                     printf "\n"
 
                     if [[ "$suffix" =~ bak([0-9]+)? ]]; then
