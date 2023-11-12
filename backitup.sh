@@ -43,16 +43,18 @@ case $# in
 
             if [ "$filename" = "$dirName" ]; then
                 if [ "$suffix" != "$dirName" ]; then
-                    printf "\nFound $fullpath\n"
-                    printf "Base $filebase\n"
-                    printf "Name $filename\n"
-                    printf "Suffix $suffix\n"
-                    printf "Parent $parentDir\n"
-                    printf '%.0s-' {1..55}
-                    printf "\n"
-
                     if [[ "$suffix" =~ bak([0-9]+)? ]]; then
-                        howManyBackups=$(echo $(($howManyBackups + 1)))
+                        printf "\nFound $fullpath\n"
+                        printf "Base $filebase\n"
+                        printf "Name $filename\n"
+                        printf "Suffix $suffix\n"
+                        printf "Parent $parentDir\n"
+                        printf '%.0s-' {1..55}
+                        printf "\n"
+
+                        if [[ "$suffix" =~ bak([0-9]+)? ]]; then
+                            howManyBackups=$(echo $(($howManyBackups + 1)))
+                        fi
                     fi
                 fi
             fi
