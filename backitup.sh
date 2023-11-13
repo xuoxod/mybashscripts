@@ -7,20 +7,12 @@ set -o pipefail
 source colortext.sh
 
 clearVars() {
-    unset i parentPath filebase filename suffix fullpath hasBackups
+    unset parentDir filebase filename suffix fullpath howManyBackups dirExists dirName dirPath newBackup
 }
 
 gracefulExit() {
     clearVars
     exit 0
-}
-
-createNewBackup() {
-    printf "How many $dirPath backups? $i\n"
-    i=$(echo $(($i + 1)))
-    newbackup="$parentPath/$filename-bak$i"
-    printf "Add another backup $newbackup\n"
-    gracefulExit
 }
 
 trap "gracefulExit" INT PWR QUIT TERM
@@ -46,16 +38,13 @@ case $# in
                 dirExists=true
                 if [ "$suffix" != "$dirName" ]; then
                     if [[ "$suffix" =~ bak([0-9]+)? ]]; then
-                        hasBackups=true
                         printf "\nFound $fullpath\n"
                         printf "Base $filebase\n"
                         printf "Name $filename\n"
                         printf "Suffix $suffix\n"
                         printf "Parent $parentDir\n"
-                        printf "Has backup? $hasBackups\n"
                         printf '%.0s-' {1..55}
                         printf "\n"
-
                         howManyBackups=$(echo $(($howManyBackups + 1)))
                     fi
                 fi
@@ -79,7 +68,6 @@ case $# in
             white
             printf "$text\n"
         fi
-
     else
         text="Directory $dirPath does not exists"
         white
