@@ -18,6 +18,24 @@ gracefulExit() {
 trap "gracefulExit" INT PWR QUIT TERM
 
 case $# in
+0)
+    tem="/path/to/enlightenment/"
+    tem2="/path/to/enlightenment"
+
+    if [[ "$tem" =~ .*/$ ]]; then
+        printf "Has trailing forward slash\n"
+    else
+        printf "No forward slash\n"
+    fi
+
+    if [[ "$tem2" =~ .*/$ ]]; then
+        printf "Has trailing forward slash\n"
+    else
+        printf "No forward slash\n"
+    fi
+
+    ;;
+
 2)
     dirPath="$1"
     dirName="$2"
@@ -31,7 +49,7 @@ case $# in
             filebase=$(basename "$file")
             filename=${filebase%-*}
             suffix=${filebase##*-}
-            fullpath="$dirPath/$filebase"
+            fullpath="$dirPath$filebase"
             parentDir="$(dirname "$fullpath")"
 
             if [ "$filename" = "$dirName" ]; then
@@ -43,7 +61,7 @@ case $# in
                         printf "Name $filename\n"
                         printf "Suffix $suffix\n"
                         printf "Parent $parentDir\n"
-                        printf '%.0s-' {1..55}
+                        printf -- '%.0s-' {1..55}
                         printf "\n"
                         howManyBackups=$(echo $(($howManyBackups + 1)))
                     fi
@@ -53,13 +71,20 @@ case $# in
 
         if [ "$dirExists" = true ]; then
             printf "\nHow many backups do $dirName have? $howManyBackups\n"
+
+            if [[ "$dirPath" =~ .*/$ ]]; then
+                printf ""
+            else
+                dirPath="$dirPath/"
+            fi
+
             if [ "$howManyBackups" -eq 0 ]; then
-                newBackup="$parentDir/$dirName-bak"
+                newBackup="$dirPath$dirName-bak"
                 printf "Making new backup $newBackup\n"
             elif [ "$howManyBackups" -gt 0 ]; then
                 howManyBackups=$(echo $(($howManyBackups + 1)))
-                newBackup="$parentDir/$dirName-bak$howManyBackups"
-                printf "Making new backup $newBackup\n"
+                newBackup="$dirPath$dirName-bak$howManyBackups"
+                printf "Adding new backup $newBackup\n"
             else
                 gracefulExit
             fi
