@@ -54,11 +54,11 @@ case $# in
         if [ "$dirExists" = true ]; then
             printf "\nHow many backups do $dirName have? $howManyBackups\n"
             if [ "$howManyBackups" -eq 0 ]; then
-                newBackup="$parentDir/$filename-bak"
+                newBackup="$parentDir/$dirName-bak"
                 printf "Making new backup $newBackup\n"
             elif [ "$howManyBackups" -gt 0 ]; then
                 howManyBackups=$(echo $(($howManyBackups + 1)))
-                newBackup="$parentDir/$filename-bak$howManyBackups"
+                newBackup="$parentDir/$dirName-bak$howManyBackups"
                 printf "Making new backup $newBackup\n"
             else
                 gracefulExit
