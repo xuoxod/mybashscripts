@@ -18,10 +18,10 @@ declare -r PROG="Manage User Account"
 declare -r DESC="Administrative helper script use for: Adding user to sudo group, Removing user from sudo group,
 Listing user's group(s), Locking user account and Unlocking user account."
 
-set -e
-set -u
-set -o pipefail
-# set -x
+set -e          # Exit if any command has a non-zero exit status
+set -u          # Set variables before using them
+set -o pipefail # Prevent pipeline errors from being masked
+# set -x Prints command to the console
 source colortext.sh
 
 clearVars() {
@@ -68,10 +68,14 @@ case $# in
                     if [ -w "$arg" ]; then
                         printf "File [$arg] is writable\n"
                     else
-                        printf "File [$arg] is not writable\n"
+                        text=$(printf "File [$arg] is not writable\n")
+                        red
+                        printf "$text\n"
                     fi
                 else
-                    printf "File [$arg] is not readable\n"
+                    text=$(printf "File [$arg] is not readable\n")
+                    red
+                    printf "$text\n"
                 fi
             else
                 if [ -d "$arg" ]; then
@@ -81,21 +85,32 @@ case $# in
                         if [ -w "$arg" ]; then
                             printf "Directory [$arg] is writable\n"
                         else
-                            printf "Directory [$arg] is not writable\n"
+                            text=$(printf "Directory [$arg] is not writable\n")
+                            red
+                            printf "$text\n"
                         fi
                     else
-                        printf "Directory [$arg] is not readable\n"
+                        text=$(printf "Directory [$arg] is not readable\n")
+                        red
+                        printf "$text\n"
                     fi
                 else
-                    printf "Path [$arg] is not a regular nor is it a directory\n"
+                    text=$(printf "Path [$arg] is not a regular nor is it a directory\n")
+                    red
+                    printf "$text\n"
                 fi
             fi
         else
-            printf "Path [$arg] does not exist\n"
+            text=$(printf "Path [$arg] does not exist\n")
+            red
+            printf "$text\n"
         fi
     else
-        printf "[${arg^^}] is not a valid path\n"
+        text=$(printf "[${arg^^}] is not a valid path\n")
+        red
+        printf "$text\n"
     fi
     ;;
 
 esac
+gracefulExit
